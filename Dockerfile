@@ -124,7 +124,11 @@ WORKDIR "/root/ws/src"
 #     git submodule update --init    && \
 #     git checkout working_centermask && \
 #     git pull
- 
+
+# RUN git clone https://github.com/mfinean/finean_msgs.git && \
+#     cd finean_msgs  && \
+#     git pull
+
 WORKDIR "/root"
 # COPY ./centermask_node_testing.ipynb /root/centermask_node_testing.ipynb
 # COPY ./centermask_node_testing2.ipynb /root/centermask_node_testing2.ipynb

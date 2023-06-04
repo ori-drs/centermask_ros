@@ -1,16 +1,16 @@
-FROM nvidia/cuda:11.0-runtime-ubuntu18.04
-
+# FROM nvidia/cuda:11.0.3-runtime-ubuntu18.04
+FROM nvidia/cuda:11.0.3-cudnn8-runtime-ubuntu18.04
 LABEL maintainer="Mark Finean"
 LABEL maintainer_email="mfinean@robots.ox.ac.uk"
 
 ARG DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata pkgs....
 
-ENV CUDNN_VERSION 7.6.5.32
+# ENV CUDNN_VERSION 7.6.5.32
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libcudnn7=$CUDNN_VERSION-1+cuda10.0 \
-    && apt-mark hold libcudnn7 && \
-    rm -rf /var/lib/apt/lists/*
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     libcudnn7=$CUDNN_VERSION-1+cuda10.0 \
+#     && apt-mark hold libcudnn7 && \
+#     rm -rf /var/lib/apt/lists/*
 
 # add the ROS deb repo to the apt sources list
 RUN apt-get update && \
@@ -104,6 +104,7 @@ RUN mkdir /root/.jupyter && \
          "\nc.NotebookApp.open_browser = False" \
          "\nc.NotebookApp.token = ''" \
          > /root/.jupyter/jupyter_notebook_config.py
+
 EXPOSE 8888
 
 
@@ -117,28 +118,16 @@ RUN \
 RUN apt-get install mlocate && updatedb
 
 WORKDIR "/root/ws/src"
-
-# RUN git clone https://github.com/mfinean/Detectron2_ros.git && \
-#     cd Detectron2_ros  && \
-#     git pull --all  && \
-#     git submodule update --init    && \
-#     git checkout working_centermask && \
-#     git pull
-
-# RUN git clone https://github.com/mfinean/finean_msgs.git && \
-#     cd finean_msgs  && \
-#     git pull
-
 WORKDIR "/root"
-# COPY ./centermask_node_testing.ipynb /root/centermask_node_testing.ipynb
-# COPY ./centermask_node_testing2.ipynb /root/centermask_node_testing2.ipynb
+
 RUN wget https://dl.dropbox.com/s/uwc0ypa1jvco2bi/centermask2-lite-V-39-eSE-FPN-ms-4x.pth && \
     wget https://images.all-free-download.com/images/graphiclarge/young_tennis_player_186542.jpg && \
     wget https://dl.dropbox.com/s/c6n79x83xkdowqc/centermask2-V-99-eSE-FPN-ms-3x.pth 
+
 # -------------------------------------------- At this point you should be able to build and use detectron2_ros.
 
 # We now need to transfer our local copy of centermask into the docker file so that we can build what we're working on
-# This will need to by installed into the python3 environment that we've created
+# This will need to be installed into the python3 environment that we've created
 
 
 

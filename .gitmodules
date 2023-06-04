@@ -1,0 +1,6 @@
+[submodule "Detectron2_ros"]
+	path = Detectron2_ros
+	url = https://github.com/ori-drs/Detectron2_ros.git
+[submodule "centermask2"]
+	path = centermask2
+	url = https://github.com/ori-drs/centermask2.git

@@ -4,3 +4,4 @@
 [submodule "centermask2"]
 	path = centermask2
 	url = https://github.com/ori-drs/centermask2.git
+	branch = ori

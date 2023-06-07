@@ -1,16 +1,8 @@
-# FROM nvidia/cuda:11.0.3-runtime-ubuntu18.04
 FROM nvidia/cuda:11.0.3-cudnn8-runtime-ubuntu18.04
 LABEL maintainer="Mark Finean"
 LABEL maintainer_email="mfinean@robots.ox.ac.uk"
 
 ARG DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata pkgs....
-
-# ENV CUDNN_VERSION 7.6.5.32
-
-# RUN apt-get update && apt-get install -y --no-install-recommends \
-#     libcudnn7=$CUDNN_VERSION-1+cuda10.0 \
-#     && apt-mark hold libcudnn7 && \
-#     rm -rf /var/lib/apt/lists/*
 
 # add the ROS deb repo to the apt sources list
 RUN apt-get update && \
@@ -54,8 +46,6 @@ COPY ./ros_entrypoint.sh /ros_entrypoint.sh
 RUN echo 'source /opt/ros/melodic/setup.bash' >> /root/.bashrc && \ 
 /bin/bash /opt/ros/melodic/setup.bash
 
-
-
 ########################################################################################
 
 # Essentials: developer tools, build tools, OpenBLAS
@@ -88,12 +78,12 @@ RUN . ~/.bashrc && \
     pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html && \
     pip install cython pyyaml && \
     pip install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI' && \
-    python -m pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu110/torch1.7/index.html && \
+    python3 -m pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu110/torch1.7/index.html && \
     pip install opencv-python  && \
     pip install rospkg && \
     pip install pyrealsense2 && \
-    pip --no-cache-dir install jupyter  && \
-    cd /root/centermask2 && \
+    pip --no-cache-dir install jupyter && \
+    cd /root/centermask2 && \ 
     pip install ."
 
 # Jupyter Notebook
@@ -107,7 +97,6 @@ RUN mkdir /root/.jupyter && \
 
 EXPOSE 8888
 
-
 ADD repo-key /
 RUN \
     chmod 600 /repo-key && \  
@@ -117,19 +106,11 @@ RUN \
 # So we can use locate
 RUN apt-get install mlocate && updatedb
 
-WORKDIR "/root/ws/src"
 WORKDIR "/root"
 
+# Incldue the lite centermask models
 RUN wget https://dl.dropbox.com/s/uwc0ypa1jvco2bi/centermask2-lite-V-39-eSE-FPN-ms-4x.pth && \
-    wget https://images.all-free-download.com/images/graphiclarge/young_tennis_player_186542.jpg && \
     wget https://dl.dropbox.com/s/c6n79x83xkdowqc/centermask2-V-99-eSE-FPN-ms-3x.pth 
-
-# -------------------------------------------- At this point you should be able to build and use detectron2_ros.
-
-# We now need to transfer our local copy of centermask into the docker file so that we can build what we're working on
-# This will need to be installed into the python3 environment that we've created
-
-
 
 RUN export DISPLAY=:1 
 
